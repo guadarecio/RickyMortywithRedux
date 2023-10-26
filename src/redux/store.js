@@ -1,7 +1,12 @@
 import {createStore} from 'redux';
 
-const reducer = (state, action) => {
+const initialState = {
+  charactersList: {},
+  characterDetails: {},
+};
+
+const reducer = (state = initialState, action) => {
   return state;
 };
 
-export default createStore();
+export default createStore(reducer);
