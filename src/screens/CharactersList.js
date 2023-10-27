@@ -1,7 +1,14 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect} from 'react';
-import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  TextInput,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
 import {charactersData} from '../redux/actions';
@@ -10,6 +17,8 @@ const CharactersList = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const data = useSelector(state => state.data?.results);
+  const [text, setText] = useState('');
+  const [filteredDataAll, setFilteredDataAll] = useState(null);
 
   useEffect(() => {
     dispatch(charactersData());
@@ -47,11 +56,30 @@ const CharactersList = () => {
     );
   };
 
+  const filterCharacters = searchedText => {
+    setText(searchedText);
+    const filteredData = data?.filter(item => item.name.includes(text));
+    setFilteredDataAll(filteredData);
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: 'black'}}>
-      
+      <TextInput
+        style={{
+          height: 40,
+          margin: 12,
+          borderWidth: 1,
+          padding: 10,
+          backgroundColor: 'gray',
+          borderRadius: 10,
+        }}
+        onChangeText={searchedText => filterCharacters(searchedText)}
+        value={text}
+        placeholder="Search"
+        placeholderTextColor={'white'}
+      />
       <FlatList
-        data={data || []}
+        data={filteredDataAll || data}
         renderItem={({item}) => <Item data={item} />}
         keyExtractor={item => item.id}
       />
